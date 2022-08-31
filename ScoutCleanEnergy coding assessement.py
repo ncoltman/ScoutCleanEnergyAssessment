@@ -24,7 +24,14 @@ class TableData:
         time_localized = pd.to_datetime(time, utc = True )
         data_localized = data
         data['time'] = time_localized
-        return data_localized
+
+        #find missing timeStamps and label as NaN
+        data_final = data_localized.set_index('time').asfreq('H')
+        data_final = data_final.reset_index()
+
+        #need to add timestamp flag column
+
+        return data_final
         
 
     #def erroneousValues(self):
@@ -35,11 +42,8 @@ class TableData:
 def main():
     file = TableData("test 2021-05-06 start.xlsx")
     data = file.excel_reader()
-    #data['time'] = pd.to_datetime(data['time'])
-    #data = data.set_index('time').asfreq('1H')
-    #print (data)
-    data_localized = file.missingTimeStamp(data)
-    print(data_localized)
+    data_final = file.missingTimeStamp(data)
+    print(data_final.to_string())
 
 
 
