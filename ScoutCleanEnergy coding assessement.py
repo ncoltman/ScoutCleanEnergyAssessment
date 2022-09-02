@@ -34,14 +34,8 @@ class TableData:
         alltimes = data_alltimes['time']
         timestamp_flag = []
 
+        #check if index from alltimes exists in original time list, if it doesnt add to timestamp flag column
         for i in range(len(alltimes)):
-            """
-            if time[i]:
-                timestamp_flag.append("")
-            elif time[i] != alltimes[i]:
-                timestamp_flag.append("Missing from original input dataset")
-
-            """
             try:
                 time[i]
                 timestamp_flag.append("")
@@ -52,7 +46,12 @@ class TableData:
         
         return data_alltimes
 
-    #def erroneousValues(self):
+    def erroneousValues(self, data):
+        qc_flag = data['VTWS_AVG'].fillna("Erroneous")
+
+        data['data qc flag VTWS_AVG'] = qc_flag
+
+        return data
 
     #def excel_writer(self, data, path):
 
@@ -61,10 +60,9 @@ def main():
     file = TableData("test 2021-05-06 start.xlsx")
     data = file.excel_reader()
     data_final = file.missingTimeStamp(data)
-    print(data_final.to_string())
-
-
-
+    #print(data_final)
+    data_erroneous = file.erroneousValues(data_final)
+    print(data_erroneous.to_string())
 
 
 if __name__ == "__main__":
