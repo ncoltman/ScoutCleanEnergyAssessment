@@ -16,23 +16,41 @@ class TableData:
         return table
 
     def missingTimeStamp(self, data):
-        #if we cant assume that the data is in chronological order, use this function to sort
-        #data = data.sort_values('time', ascending = True)
         
         time = data['time']
         #localized to UTC (can localize to whatever timezone is wanted)
         time_localized = pd.to_datetime(time, utc = True )
         data_localized = data
-        data['time'] = time_localized
+        data_localized['time'] = time_localized
 
-        #find missing timeStamps and label as NaN
-        data_final = data_localized.set_index('time').asfreq('H')
-        data_final = data_final.reset_index()
+        #if we cant assume that the data is in chronological order, use this function to sort
+        #data = data.sort_values('time', ascending = True)
+
+        #find missing timeStamps and label as NaN (H = hour, we can adjust time frame if needed)
+        data_alltimes = data_localized.set_index('time').asfreq('H')
+        data_alltimes = data_alltimes.reset_index()
 
         #need to add timestamp flag column
+        alltimes = data_alltimes['time']
+        timestamp_flag = []
 
-        return data_final
+        for i in range(len(alltimes)):
+            """
+            if time[i]:
+                timestamp_flag.append("")
+            elif time[i] != alltimes[i]:
+                timestamp_flag.append("Missing from original input dataset")
+
+            """
+            try:
+                time[i]
+                timestamp_flag.append("")
+            except KeyError:
+                timestamp_flag.append("Missing from original input dataset")
+
+        data_alltimes['Timestamp Flag'] = timestamp_flag
         
+        return data_alltimes
 
     #def erroneousValues(self):
 
