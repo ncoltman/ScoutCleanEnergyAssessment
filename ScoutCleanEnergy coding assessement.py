@@ -2,7 +2,6 @@
 import pandas as pd
 import datetime
 import pytz
-import csv
 
 
 class TableData:
@@ -53,8 +52,10 @@ class TableData:
 
         return data
 
-    #def excel_writer(self, data, path):
-
+    def excel_writer(self, data):
+        #timezones not supported on xlsx
+        data['time'] = data['time'].dt.tz_localize(None)
+        data.to_excel("output.xlsx")
 
 def main():
     file = TableData("test 2021-05-06 start.xlsx")
@@ -62,7 +63,8 @@ def main():
     data_final = file.missingTimeStamp(data)
     #print(data_final)
     data_erroneous = file.erroneousValues(data_final)
-    print(data_erroneous.to_string())
+    #print(data_erroneous.to_string())
+    file.excel_writer(data_erroneous)
 
 
 if __name__ == "__main__":
