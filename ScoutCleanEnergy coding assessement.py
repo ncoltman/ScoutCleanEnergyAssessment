@@ -57,6 +57,9 @@ class TableData:
         data['time'] = data['time'].dt.tz_localize(None)
         data.to_excel("output.xlsx")
 
+    def csv_writer(self, data):
+        data.to_csv('output.csv')
+
 def main():
     file = TableData("test 2021-05-06 start.xlsx")
     data = file.excel_reader()
@@ -64,7 +67,7 @@ def main():
     #print(data_final)
     data_erroneous = file.erroneousValues(data_final)
     #print(data_erroneous.to_string())
-    file.excel_writer(data_erroneous)
+    file.csv_writer(data_erroneous)
 
 
 if __name__ == "__main__":
